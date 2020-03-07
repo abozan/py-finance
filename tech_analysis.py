@@ -3,10 +3,9 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from pandas_datareader import data, wb
 
-
 if __name__ == '__main__':
-    sp500 = data.DataReader('^GSPC', data_source='yahoo',
-                    start='1/1/2000', end='3/7/2020')
+    # collect time series for S&P 500
+    sp500 = data.DataReader('^GSPC', data_source='yahoo', start='1/1/2000')
     
     # estimate two-month and one-year trends
     sp500['42d'] = np.round(sp500['Close'].rolling(window=42).mean(), 2)
@@ -20,7 +19,7 @@ if __name__ == '__main__':
     sp500['Market'] = np.log(sp500['Close'] / sp500['Close'].shift(1))
     sp500['Strategy'] = sp500['Regime'].shift(1) * sp500['Market']
 
-    # plot trends over close quotes
+    # plot trends over close quotes; strategy vs. market
     sp500[['Close', '42d', '252d']].plot(grid=True, figsize=(8,6))
     sp500[['Market', 'Strategy']].cumsum().apply(np.exp).plot(grid=True, figsize=(8,6))
     plt.show(block=True)
